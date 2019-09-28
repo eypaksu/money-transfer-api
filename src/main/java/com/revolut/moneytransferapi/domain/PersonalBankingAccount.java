@@ -1,17 +1,26 @@
 package com.revolut.moneytransferapi.domain;
 
-import javax.persistence.Column;
+import java.math.BigDecimal;
+import java.util.Currency;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class PersonalBankingAccount extends BankingAccount{
 
   @ManyToOne
   private Person person;
 
+  public PersonalBankingAccount(Person person, String accountNo, String accountName, Currency currency, BigDecimal balance, boolean isActive) {
+    this.person=person;
+    this.setAccountName(accountName);
+    this.setAccountNo(accountNo);
+    this.setBalance(balance);
+    this.setCurrency(currency);
+    this.setActive(isActive);
+  }
 }

@@ -111,7 +111,7 @@ public class MoneyTransferApplication {
     PersonalBankingAccount personalBankingAccount = new PersonalBankingAccount();
     personalBankingAccount.setPerson(person);
     personalBankingAccount.setAccountName("Merve NUr");
-    personalBankingAccount.setId("123");
+    personalBankingAccount.setAccountNo("111111111");
     personalBankingAccount.setBalance(BigDecimal.TEN.multiply(BigDecimal.valueOf(10000)));
     personalBankingAccount.setCurrency(Currency.getInstance(String.valueOf(CurrentSupportedCurrency.EUR)));
 
@@ -128,7 +128,6 @@ public class MoneyTransferApplication {
     BusinessBankingAccount businessBankingAccount = new BusinessBankingAccount();
     businessBankingAccount.setCompany(company);
     businessBankingAccount.setAccountNo("12345678");
-    businessBankingAccount.setId("124");
 
     entityManager.persist(businessBankingAccount);
 
