@@ -8,9 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Company {
 
   @Id
@@ -25,4 +27,11 @@ public class Company {
 
   @OneToOne
   private Address address;
+
+  public Company(String name, LocalDate dateOfFound,
+      Address address) {
+    this.name = name;
+    this.dateOfFound = dateOfFound;
+    this.address = address;
+  }
 }

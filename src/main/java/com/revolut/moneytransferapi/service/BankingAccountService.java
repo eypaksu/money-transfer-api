@@ -1,9 +1,9 @@
 package com.revolut.moneytransferapi.service;
 
-import com.revolut.moneytransferapi.dto.BankingTransactionHistoryResponseDTO;
+import com.revolut.moneytransferapi.dto.BankingAccountTransactionHistoryResponseDTO;
 
 public interface BankingAccountService {
 
-  BankingTransactionHistoryResponseDTO getBankStatementForLastThirtyDays(boolean isBusiness, String accountNo);
+  BankingAccountTransactionHistoryResponseDTO getBankStatement(boolean isBusiness, String accountNo);
 
 }

@@ -9,7 +9,7 @@ import com.revolut.moneytransferapi.domain.Person;
 import com.revolut.moneytransferapi.domain.PersonalBankingAccount;
 import com.revolut.moneytransferapi.domain.PersonalBankingAccountTransactionHistory;
 import com.revolut.moneytransferapi.domain.TransactionType;
-import com.revolut.moneytransferapi.dto.BankingTransactionHistoryResponseDTO;
+import com.revolut.moneytransferapi.dto.BankingAccountTransactionHistoryResponseDTO;
 import com.revolut.moneytransferapi.repository.BusinessBankingAccountRepository;
 import com.revolut.moneytransferapi.repository.BusinessBankingAccountTransactionHistoryRepository;
 import com.revolut.moneytransferapi.repository.PersonalBankingAccountRepository;
@@ -22,11 +22,14 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BankingAccountServiceTest {
 
   @InjectMocks
@@ -56,12 +59,11 @@ public class BankingAccountServiceTest {
 
     when(businessBankingAccountRepository.findByAccountNo(Mockito.anyString())).thenReturn(new BusinessBankingAccount());
 
-    BankingTransactionHistoryResponseDTO bankingTransactionHistoryResponseDTO =
-        bankingAccountService.getBankStatementForLastThirtyDays(true, ACCOUNT_NO);
+    BankingAccountTransactionHistoryResponseDTO bankingAccountTransactionHistoryResponseDTO =
+        bankingAccountService.getBankStatement(true, ACCOUNT_NO);
 
-    Assert.assertEquals(0, bankingTransactionHistoryResponseDTO.getBankingAccountTransactionHistoryList().size());
-    Assert.assertNull(bankingTransactionHistoryResponseDTO.getAccountName());
-    Assert.assertNull(bankingTransactionHistoryResponseDTO.getAccountNo());
+    Assert.assertNull(bankingAccountTransactionHistoryResponseDTO.getAccountName());
+    Assert.assertNull(bankingAccountTransactionHistoryResponseDTO.getAccountNo());
 
   }
 
@@ -70,10 +72,10 @@ public class BankingAccountServiceTest {
     BusinessBankingAccount businessBankingAccount = new BusinessBankingAccount(new Company(), ACCOUNT_NO, "Eyup Aksu", Currency
         .getInstance("USD"), BigDecimal.valueOf(1000000), true );
     when(businessBankingAccountRepository.findByAccountNo(Mockito.anyString())).thenReturn(businessBankingAccount);
-    when(businessBankingAccountTransactionHistoryRepository.getTransactionHistoryList(Mockito.anyString())).thenReturn(
+    when(businessBankingAccountTransactionHistoryRepository.getTransactionHistoryList(Mockito.any())).thenReturn(
         generateBusinessAccountHistoryList(businessBankingAccount));
 
-    BankingTransactionHistoryResponseDTO responseDTO = bankingAccountService.getBankStatementForLastThirtyDays(true, ACCOUNT_NO);
+    BankingAccountTransactionHistoryResponseDTO responseDTO = bankingAccountService.getBankStatement(true, ACCOUNT_NO);
 
     Assert.assertEquals(ACCOUNT_NO, responseDTO.getAccountNo());
     Assert.assertEquals("Eyup Aksu", responseDTO.getAccountName());
@@ -82,17 +84,17 @@ public class BankingAccountServiceTest {
   }
 
   @Test
-  public void shouldReturnOnlyBusinessAccountInfoAndHistory(){
+  public void shouldReturnOnlyPersonalAccountInfoAndHistoryWhenIsBusinessFalse(){
     PersonalBankingAccount personalBankingAccount = new PersonalBankingAccount(new Person(), ACCOUNT_NO, "Eyup Aksu", Currency
         .getInstance("USD"), BigDecimal.valueOf(1000000), true);
     when(personalBankingAccountRepository.findByAccountNo(Mockito.anyString())).thenReturn(personalBankingAccount);
-    when(personalBankingAccountTransactionHistoryRepository.getTransactionHistoryList(Mockito.anyString())).thenReturn(generatePersonalAccountHistoryList(personalBankingAccount));
+    when(personalBankingAccountTransactionHistoryRepository.getTransactionHistoryList(Mockito.any())).thenReturn(generatePersonalAccountHistoryList(personalBankingAccount));
 
-    BankingTransactionHistoryResponseDTO responseDTO = bankingAccountService.getBankStatementForLastThirtyDays(true, ACCOUNT_NO);
+    BankingAccountTransactionHistoryResponseDTO responseDTO = bankingAccountService.getBankStatement(false, ACCOUNT_NO);
 
-    Assert.assertNull(responseDTO.getAccountNo());
-    Assert.assertNull(responseDTO.getAccountName());
-    Assert.assertNull(responseDTO.getBankingAccountTransactionHistoryList());
+    Assert.assertEquals(ACCOUNT_NO, responseDTO.getAccountNo());
+    Assert.assertEquals("Eyup Aksu", responseDTO.getAccountName());
+    Assert.assertEquals(2, responseDTO.getBankingAccountTransactionHistoryList().size());
 
   }
 

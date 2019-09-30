@@ -97,7 +97,7 @@ public class MoneyTransferApplication {
     entityManager.getTransaction().begin();
 
     Address address = new Address();
-    address.setAddress("33 Chamberlayne Road");
+    address.setStreet("33 Chamberlayne Road");
     address.setPostcode("NW103NB");
 
     entityManager.persist(address);
@@ -112,7 +112,7 @@ public class MoneyTransferApplication {
     personalBankingAccount.setPerson(person);
     personalBankingAccount.setAccountName("Merve NUr");
     personalBankingAccount.setAccountNo("111111111");
-    personalBankingAccount.setBalance(BigDecimal.TEN.multiply(BigDecimal.valueOf(10000)));
+    personalBankingAccount.setBalance(BigDecimal.valueOf(10000));
     personalBankingAccount.setCurrency(Currency.getInstance(String.valueOf(CurrentSupportedCurrency.EUR)));
 
     entityManager.persist(personalBankingAccount);
@@ -127,7 +127,8 @@ public class MoneyTransferApplication {
 
     BusinessBankingAccount businessBankingAccount = new BusinessBankingAccount();
     businessBankingAccount.setCompany(company);
-    businessBankingAccount.setAccountNo("12345678");
+    businessBankingAccount.setAccountNo("22222222");
+    businessBankingAccount.setBalance(BigDecimal.valueOf(10000));
 
     entityManager.persist(businessBankingAccount);
 

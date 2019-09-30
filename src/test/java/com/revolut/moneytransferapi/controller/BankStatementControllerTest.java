@@ -7,7 +7,7 @@ import com.revolut.moneytransferapi.domain.BusinessBankingAccount;
 import com.revolut.moneytransferapi.domain.BusinessBankingAccountTransactionHistory;
 import com.revolut.moneytransferapi.domain.Company;
 import com.revolut.moneytransferapi.domain.TransactionType;
-import com.revolut.moneytransferapi.dto.BankingTransactionHistoryResponseDTO;
+import com.revolut.moneytransferapi.dto.BankingAccountTransactionHistoryResponseDTO;
 import com.revolut.moneytransferapi.service.BankingAccountService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,10 +24,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-public class BankingAccountControllerTest {
+public class BankStatementControllerTest {
 
   @InjectMocks
-  private BankingAccountController bankingAccountController;
+  private BankStatementController bankStatementController;
 
   @Mock
   private BankingAccountService bankingAccountService;
@@ -41,9 +41,8 @@ public class BankingAccountControllerTest {
 
   @Test
   public void shouldReturnNotFoundIfAccountDoesntExist(){
-    Mockito.doReturn(new BankingTransactionHistoryResponseDTO()).when(bankingAccountService.getBankStatementForLastThirtyDays(Mockito.anyBoolean(),Mockito.anyString()));
-
-    Response response = bankingAccountController.getBankStatementForLastThirtyDays(false,ACCOUNT_NO);
+    when(bankingAccountService.getBankStatement(Mockito.anyBoolean(),Mockito.anyString())).thenReturn(new BankingAccountTransactionHistoryResponseDTO());
+    Response response = bankStatementController.getBankStatement(false,ACCOUNT_NO);
 
     Assert.assertEquals(404, response.getStatus());
     Assert.assertEquals(Status.NOT_FOUND, response.getStatusInfo());
@@ -52,9 +51,9 @@ public class BankingAccountControllerTest {
 
   @Test
   public void shouldReturnTransactionHistory(){
-    Mockito.doReturn(generateBankingTransactionHistoryResponse()).when(bankingAccountService).getBankStatementForLastThirtyDays(Mockito.anyBoolean(),Mockito.anyString());
+    Mockito.doReturn(generateBankingTransactionHistoryResponse()).when(bankingAccountService).getBankStatement(Mockito.anyBoolean(),Mockito.anyString());
 
-    Response response = bankingAccountController.getBankStatementForLastThirtyDays(
+    Response response = bankStatementController.getBankStatement(
         true,ACCOUNT_NO);
 
     Assert.assertEquals(200, response.getStatus());
@@ -62,7 +61,7 @@ public class BankingAccountControllerTest {
   }
 
 
-  private BankingTransactionHistoryResponseDTO generateBankingTransactionHistoryResponse(){
+  private BankingAccountTransactionHistoryResponseDTO generateBankingTransactionHistoryResponse(){
     BusinessBankingAccount businessBankingAccount = new BusinessBankingAccount(new Company(),"12345678","Eyup Aksu", Currency.getInstance("EUR"),BigDecimal.valueOf(1000), true);
     BusinessBankingAccountTransactionHistory transaction1 = new BusinessBankingAccountTransactionHistory(businessBankingAccount, TransactionType.OPEN_ACCOUNT.toString(),
         LocalDateTime.now().minusHours(1), BigDecimal.valueOf(10000));
@@ -72,7 +71,7 @@ public class BankingAccountControllerTest {
 
     List<BankingAccountTransactionHistory> transactionHistoryList = Arrays.asList(transaction1,transaction2);
 
-    BankingTransactionHistoryResponseDTO responseDTO = new BankingTransactionHistoryResponseDTO();
+    BankingAccountTransactionHistoryResponseDTO responseDTO = new BankingAccountTransactionHistoryResponseDTO();
     responseDTO.setBankingAccountTransactionHistoryList(transactionHistoryList);
     responseDTO.setAccountNo(businessBankingAccount.getAccountNo());
     responseDTO.setAccountName(businessBankingAccount.getAccountName());

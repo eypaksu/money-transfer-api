@@ -4,17 +4,25 @@ import com.revolut.moneytransferapi.EntityManagerUtil;
 import com.revolut.moneytransferapi.domain.BusinessBankingAccount;
 import com.revolut.moneytransferapi.repository.BusinessBankingAccountRepository;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BusinessBankingAccountRepositoryImpl implements BusinessBankingAccountRepository {
 
-  EntityManager entityManager = EntityManagerUtil.getEntityManager();
+  private static final Logger logger = LoggerFactory.getLogger(BusinessBankingAccountRepositoryImpl.class);
+  private EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
   @Override
   public BusinessBankingAccount findByAccountNo(String accountNo) {
-    Object o =  entityManager.createQuery(
-        "SELECT accountName, accountNo, balance, currency  FROM BusinessBankingAccount WHERE accountNo='1234578'")
-        .getSingleResult();
-
-    return null;
+    TypedQuery<BusinessBankingAccount> query = entityManager.createQuery(
+        "SELECT b FROM BusinessBankingAccount b WHERE b.accountNo = :accountNo", BusinessBankingAccount.class).setParameter("accountNo", accountNo);
+    try{
+      return query.getSingleResult();
+    }catch(NoResultException n){
+      logger.warn("not found account with this accountNo");
+      return new BusinessBankingAccount();
+    }
   }
 }
