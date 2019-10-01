@@ -10,6 +10,7 @@ import com.revolut.moneytransferapi.domain.Person;
 import com.revolut.moneytransferapi.domain.PersonalBankingAccount;
 import com.revolut.moneytransferapi.domain.PersonalBankingAccountTransactionHistory;
 import com.revolut.moneytransferapi.domain.TransactionType;
+import com.revolut.moneytransferapi.util.EntityManagerUtil;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
 import java.math.BigDecimal;

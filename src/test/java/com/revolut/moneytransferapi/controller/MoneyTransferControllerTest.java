@@ -34,7 +34,7 @@ public class MoneyTransferControllerTest {
     when(moneyTransferService.moneyTransfer(Mockito
         .any())).thenReturn(new MoneyTransferResponseDTO(false, MoneyTransferConstant.NOT_FOUND_SENDER_ACCOUNT));
 
-    Response response = moneyTransferController.moneyTransfer(new MoneyTransferRequestDTO());
+    Response response = moneyTransferController.sendMoney(new MoneyTransferRequestDTO());
 
     Assert.assertEquals(404, response.getStatus());
     Assert.assertEquals(Status.NOT_FOUND, response.getStatusInfo());
@@ -48,7 +48,7 @@ public class MoneyTransferControllerTest {
     MoneyTransferRequestDTO moneyTransferRequestDTO = new MoneyTransferRequestDTO();
     when(moneyTransferService.moneyTransfer(moneyTransferRequestDTO)).thenReturn(new MoneyTransferResponseDTO(false, MoneyTransferConstant.NOT_FOUND_RECEIVER_ACCOUNT));
 
-    Response response = moneyTransferController.moneyTransfer(moneyTransferRequestDTO);
+    Response response = moneyTransferController.sendMoney(moneyTransferRequestDTO);
 
     Assert.assertEquals(404, response.getStatus());
     Assert.assertEquals(Status.NOT_FOUND, response.getStatusInfo());
@@ -61,7 +61,7 @@ public class MoneyTransferControllerTest {
     MoneyTransferRequestDTO moneyTransferRequestDTO = new MoneyTransferRequestDTO();
     when(moneyTransferService.moneyTransfer(moneyTransferRequestDTO)).thenReturn(new MoneyTransferResponseDTO(false, MoneyTransferConstant.NOT_ENOUGH_BALANCE_TO_SEND_MONEY));
 
-    Response response = moneyTransferController.moneyTransfer(moneyTransferRequestDTO);
+    Response response = moneyTransferController.sendMoney(moneyTransferRequestDTO);
     Assert.assertEquals(428, response.getStatus());
     Assert.assertEquals(Status.PRECONDITION_REQUIRED, response.getStatusInfo());
 
@@ -72,7 +72,7 @@ public class MoneyTransferControllerTest {
     MoneyTransferRequestDTO moneyTransferRequestDTO = new MoneyTransferRequestDTO();
     when(moneyTransferService.moneyTransfer(moneyTransferRequestDTO)).thenReturn(new MoneyTransferResponseDTO(true, MoneyTransferConstant.SUCCESSFUL_TRANSFER));
 
-    Response response = moneyTransferController.moneyTransfer(moneyTransferRequestDTO);
+    Response response = moneyTransferController.sendMoney(moneyTransferRequestDTO);
     Assert.assertEquals(200, response.getStatus());
     Assert.assertEquals(Status.OK, response.getStatusInfo());
 

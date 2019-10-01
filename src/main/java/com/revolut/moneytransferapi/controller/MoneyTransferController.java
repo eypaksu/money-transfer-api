@@ -27,7 +27,7 @@ public class MoneyTransferController {
   @POST
   @Path("send-money")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response moneyTransfer(MoneyTransferRequestDTO moneyTransferDto){
+  public Response sendMoney(MoneyTransferRequestDTO moneyTransferDto){
 
     MoneyTransferResponseDTO moneyTransferResponseDTO = moneyTransferService.moneyTransfer(moneyTransferDto);
 

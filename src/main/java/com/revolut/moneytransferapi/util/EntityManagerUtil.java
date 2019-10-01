@@ -1,4 +1,4 @@
-package com.revolut.moneytransferapi;
+package com.revolut.moneytransferapi.util;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

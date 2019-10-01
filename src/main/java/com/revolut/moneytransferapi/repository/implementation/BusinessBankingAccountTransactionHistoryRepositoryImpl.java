@@ -1,6 +1,6 @@
 package com.revolut.moneytransferapi.repository.implementation;
 
-import com.revolut.moneytransferapi.EntityManagerUtil;
+import com.revolut.moneytransferapi.util.EntityManagerUtil;
 import com.revolut.moneytransferapi.domain.BusinessBankingAccount;
 import com.revolut.moneytransferapi.domain.BusinessBankingAccountTransactionHistory;
 import com.revolut.moneytransferapi.repository.BusinessBankingAccountTransactionHistoryRepository;
