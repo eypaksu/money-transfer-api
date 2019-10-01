@@ -2,12 +2,10 @@ package com.revolut.moneytransferapi.repository;
 
 import com.revolut.moneytransferapi.EntityManagerUtil;
 import com.revolut.moneytransferapi.domain.Address;
-import com.revolut.moneytransferapi.domain.BankingAccountTransactionHistory;
 import com.revolut.moneytransferapi.domain.BusinessBankingAccount;
 import com.revolut.moneytransferapi.domain.BusinessBankingAccountTransactionHistory;
 import com.revolut.moneytransferapi.domain.Company;
 import com.revolut.moneytransferapi.domain.TransactionType;
-import com.revolut.moneytransferapi.repository.implementation.BusinessBankingAccountRepositoryImpl;
 import com.revolut.moneytransferapi.repository.implementation.BusinessBankingAccountTransactionHistoryRepositoryImpl;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,23 +20,20 @@ import org.junit.Test;
 
 public class BusinessBankingAccountTransactionHistoryTest {
 
-  EntityManager entityManager = EntityManagerUtil.getEntityManager();
-  private Address address;
-  private Company company;
+  private EntityManager entityManager = EntityManagerUtil.getEntityManager();
   private BusinessBankingAccountTransactionHistoryRepository businessBankingAccountTransactionHistoryRepository;
   private BusinessBankingAccount businessBankingAccount;
-
-  private final String ACCOUNT_NO="12345678";
 
   @Before
   public void setUp(){
     businessBankingAccountTransactionHistoryRepository = new BusinessBankingAccountTransactionHistoryRepositoryImpl();
     entityManager.getTransaction().begin();
-    address =new Address("33 Chamberlayne Road", "NW103NB");
+    Address address = new Address("33 Chamberlayne Road", "NW103NB");
     entityManager.persist(address);
-    company = new Company("Apple", LocalDate.of(1990,12,12), address);
+    Company company = new Company("Apple", LocalDate.of(1990, 12, 12), address);
     entityManager.persist(company);
-    businessBankingAccount = new BusinessBankingAccount(company,ACCOUNT_NO, "Apple Banking Account", Currency
+    String ACCOUNT_NO = "12345678";
+    businessBankingAccount = new BusinessBankingAccount(company, ACCOUNT_NO, "Apple Banking Account", Currency
         .getInstance("USD"), BigDecimal.valueOf(100000000), true);
     entityManager.persist(businessBankingAccount);
   }

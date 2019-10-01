@@ -1,6 +1,7 @@
 package com.revolut.moneytransferapi.service;
 
 import com.revolut.moneytransferapi.EntityManagerUtil;
+import com.revolut.moneytransferapi.constant.MoneyTransferConstant;
 import com.revolut.moneytransferapi.domain.BankingAccount;
 import com.revolut.moneytransferapi.domain.BusinessBankingAccount;
 import com.revolut.moneytransferapi.domain.BusinessBankingAccountTransactionHistory;
@@ -29,17 +30,17 @@ public class MoneyTransferServiceImpl implements MoneyTransferService {
   public MoneyTransferResponseDTO moneyTransfer(MoneyTransferRequestDTO moneyTransferRequestDTO) {
     BankingAccount senderBankingAccount = findAccountByAccountIdAndAccountType(moneyTransferRequestDTO.isSenderBusinessAccount(), moneyTransferRequestDTO.getSenderAccountNo());
     if(senderBankingAccount.getAccountNo()==null){
-      return new MoneyTransferResponseDTO(false,"Not found Sender Account");
+      return new MoneyTransferResponseDTO(false, MoneyTransferConstant.NOT_FOUND_SENDER_ACCOUNT);
     }
 
     if(senderBankingAccount.getBalance().compareTo(moneyTransferRequestDTO.getTransactionAmount())<0){
-      return new MoneyTransferResponseDTO(false,"Not enough balance to send money");
+      return new MoneyTransferResponseDTO(false,MoneyTransferConstant.NOT_ENOUGH_BALANCE_TO_SEND_MONEY);
     }
 
     BankingAccount receiverAccount = findAccountByAccountIdAndAccountType(moneyTransferRequestDTO.isReceiverBusinessAccount(),moneyTransferRequestDTO.getReceiverAccountNo());
 
     if(receiverAccount.getAccountNo()==null){
-      return new MoneyTransferResponseDTO(false,"Not found Receiver Account");
+      return new MoneyTransferResponseDTO(false,MoneyTransferConstant.NOT_FOUND_RECEIVER_ACCOUNT);
     }
     entityManager.getTransaction().begin();
 
@@ -48,7 +49,7 @@ public class MoneyTransferServiceImpl implements MoneyTransferService {
 
     entityManager.getTransaction().commit();
 
-    return new MoneyTransferResponseDTO(true, "succes");
+    return new MoneyTransferResponseDTO(true, MoneyTransferConstant.SUCCESSFUL_TRANSFER);
   }
 
   private void calculateNewBalance(BankingAccount bankingAccount, TransactionType transactionType, BigDecimal transactionAmount) {

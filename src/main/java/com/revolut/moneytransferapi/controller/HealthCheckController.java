@@ -14,7 +14,7 @@ public class HealthCheckController {
   @Path("/test")
   @Produces(MediaType.TEXT_PLAIN)
   public String test() {
-    return "--------------------------===============";
+    return "Money Transfer API";
   }
 
 }

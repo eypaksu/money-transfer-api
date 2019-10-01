@@ -8,6 +8,7 @@ import com.revolut.moneytransferapi.domain.Company;
 import com.revolut.moneytransferapi.domain.CurrentSupportedCurrency;
 import com.revolut.moneytransferapi.domain.Person;
 import com.revolut.moneytransferapi.domain.PersonalBankingAccount;
+import com.revolut.moneytransferapi.domain.PersonalBankingAccountTransactionHistory;
 import com.revolut.moneytransferapi.domain.TransactionType;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
@@ -29,6 +30,7 @@ public class MoneyTransferApplication {
 
   public static void main(String[] args) throws Exception {
 
+    //you can check h2 db via this ling http://localhost:7000/
     org.h2.tools.Server.createWebServer(new String[]{"-web","-webAllowOthers","-webPort","7000"}).start();
 
     buildSwagger();
@@ -51,8 +53,6 @@ public class MoneyTransferApplication {
   {
     ResourceConfig resourceConfig = new ResourceConfig();
 
-
-    // Replace EntityBrowser with your resource class
     // io.swagger.jaxrs.listing loads up Swagger resources
     resourceConfig.packages( HealthCheckController.class.getPackage().getName(), ApiListingResource.class.getPackage().getName() );
 
@@ -87,7 +87,7 @@ public class MoneyTransferApplication {
 
     swaggerUIResourceHandler.setResourceBase( MoneyTransferApplication.class.getClassLoader().getResource( "swagger-ui" ).toURI().toString() );
     final ContextHandler swaggerUIContext = new ContextHandler();
-    swaggerUIContext.setContextPath( "/docs/" );
+    swaggerUIContext.setContextPath( "/swagger-ui/" );
     swaggerUIContext.setHandler( swaggerUIResourceHandler );
 
     return swaggerUIContext;
@@ -96,49 +96,61 @@ public class MoneyTransferApplication {
     EntityManager entityManager = EntityManagerUtil.getEntityManager();
     entityManager.getTransaction().begin();
 
-    Address address = new Address();
-    address.setStreet("33 Chamberlayne Road");
-    address.setPostcode("NW103NB");
+    Address address = new Address("33 Chamberlayne Road","NW103NB");
 
     entityManager.persist(address);
 
-    Person person = new Person();
-    person.setName("Merve Nur");
-    person.setDateOfBirth(LocalDate.of(1990,10,12));
-    person.setAddress(address);
+    Person person = new Person("Eyup","Aksu",LocalDate.of(1990,7,10),address);
 
-
-    PersonalBankingAccount personalBankingAccount = new PersonalBankingAccount();
-    personalBankingAccount.setPerson(person);
-    personalBankingAccount.setAccountName("Merve NUr");
-    personalBankingAccount.setAccountNo("111111111");
-    personalBankingAccount.setBalance(BigDecimal.valueOf(10000));
-    personalBankingAccount.setCurrency(Currency.getInstance(String.valueOf(CurrentSupportedCurrency.EUR)));
-
-    entityManager.persist(personalBankingAccount);
     entityManager.persist(person);
 
-    Company company = new Company();
-    company.setAddress(address);
-    company.setDateOfFound(LocalDate.of(2009, 10,10));
-    company.setName("Apple");
+    PersonalBankingAccount personalBankingAccount = new PersonalBankingAccount(person,"11111111","Eyup's Personal Account",
+        Currency.getInstance(String.valueOf(CurrentSupportedCurrency.GBP)),BigDecimal.valueOf(10000),true);
+
+    entityManager.persist(personalBankingAccount);
+
+    PersonalBankingAccountTransactionHistory personalBankingAccountTransactionHistory0 = new PersonalBankingAccountTransactionHistory(personalBankingAccount,String.valueOf(TransactionType.OPEN_ACCOUNT), LocalDateTime.now().minusMonths(10), BigDecimal.valueOf(10000));
+    PersonalBankingAccountTransactionHistory personalBankingAccountTransactionHistory1 = new PersonalBankingAccountTransactionHistory(personalBankingAccount,String.valueOf(TransactionType.SENT_MONEY), LocalDateTime.now().minusMonths(10), BigDecimal.valueOf(100).negate());
+    PersonalBankingAccountTransactionHistory personalBankingAccountTransactionHistory2 = new PersonalBankingAccountTransactionHistory(personalBankingAccount,String.valueOf(TransactionType.RECEIVED_MONEY), LocalDateTime.now().minusMonths(10), BigDecimal.valueOf(100));
+
+    entityManager.persist(personalBankingAccountTransactionHistory0);
+    entityManager.persist(personalBankingAccountTransactionHistory1);
+    entityManager.persist(personalBankingAccountTransactionHistory2);
+
+    PersonalBankingAccount personalBankingAccount1 = new PersonalBankingAccount(person,"22222222","Eyup's Second Personal Account",
+        Currency.getInstance(CurrentSupportedCurrency.GBP.toString()),BigDecimal.valueOf(10000),true);
+
+    entityManager.persist(personalBankingAccount1);
+
+    PersonalBankingAccountTransactionHistory personalBankingAccountTransactionHistory3 = new PersonalBankingAccountTransactionHistory(personalBankingAccount1,String.valueOf(TransactionType.OPEN_ACCOUNT), LocalDateTime.now().minusMonths(10), BigDecimal.valueOf(10000));
+    PersonalBankingAccountTransactionHistory personalBankingAccountTransactionHistory4 = new PersonalBankingAccountTransactionHistory(personalBankingAccount1,String.valueOf(TransactionType.SENT_MONEY), LocalDateTime.now().minusMonths(10), BigDecimal.valueOf(100).negate());
+    PersonalBankingAccountTransactionHistory personalBankingAccountTransactionHistory5 = new PersonalBankingAccountTransactionHistory(personalBankingAccount1,String.valueOf(TransactionType.RECEIVED_MONEY), LocalDateTime.now().minusMonths(10), BigDecimal.valueOf(100));
+
+    entityManager.persist(personalBankingAccountTransactionHistory3);
+    entityManager.persist(personalBankingAccountTransactionHistory4);
+    entityManager.persist(personalBankingAccountTransactionHistory5);
+
+
+    Company company = new Company("Apple",LocalDate.of(1990,10,10), address);
 
     entityManager.persist(company);
 
-    BusinessBankingAccount businessBankingAccount = new BusinessBankingAccount();
-    businessBankingAccount.setCompany(company);
-    businessBankingAccount.setAccountNo("22222222");
-    businessBankingAccount.setBalance(BigDecimal.valueOf(10000));
+    BusinessBankingAccount businessBankingAccount = new BusinessBankingAccount(company,"33333333","Apple",Currency.getInstance(
+        String.valueOf(CurrentSupportedCurrency.GBP)),BigDecimal.valueOf(1100000),true);
 
     entityManager.persist(businessBankingAccount);
 
-    BusinessBankingAccountTransactionHistory businessBankingAccountTransactionHistory = new BusinessBankingAccountTransactionHistory();
-    businessBankingAccountTransactionHistory.setBusinessBankingAccount(businessBankingAccount);
-    businessBankingAccountTransactionHistory.setTransactionType(
-        String.valueOf(TransactionType.OPEN_ACCOUNT));
-    businessBankingAccountTransactionHistory.setTransactionTime(LocalDateTime.now());
+    BusinessBankingAccountTransactionHistory businessBankingAccountTransactionHistory = new BusinessBankingAccountTransactionHistory(businessBankingAccount,String.valueOf(TransactionType.OPEN_ACCOUNT),LocalDateTime.now().minusYears(1),BigDecimal.valueOf(1000000));
+    BusinessBankingAccountTransactionHistory businessBankingAccountTransactionHistory1 = new BusinessBankingAccountTransactionHistory(businessBankingAccount,String.valueOf(TransactionType.SENT_MONEY),LocalDateTime.now().minusMonths(10),BigDecimal.valueOf(10000).negate());
+    BusinessBankingAccountTransactionHistory businessBankingAccountTransactionHistory2 = new BusinessBankingAccountTransactionHistory(businessBankingAccount,String.valueOf(TransactionType.RECEIVED_MONEY),LocalDateTime.now().minusMonths(9),BigDecimal.valueOf(10000));
+    BusinessBankingAccountTransactionHistory businessBankingAccountTransactionHistory3 = new BusinessBankingAccountTransactionHistory(businessBankingAccount,String.valueOf(TransactionType.RECEIVED_MONEY),LocalDateTime.now(),BigDecimal.valueOf(100000));
 
     entityManager.persist(businessBankingAccountTransactionHistory);
+    entityManager.persist(businessBankingAccountTransactionHistory1);
+    entityManager.persist(businessBankingAccountTransactionHistory2);
+    entityManager.persist(businessBankingAccountTransactionHistory3);
+
+
     entityManager.getTransaction().commit();
   }
 

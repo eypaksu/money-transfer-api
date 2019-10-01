@@ -40,7 +40,7 @@ public class BankStatementControllerTest {
   }
 
   @Test
-  public void shouldReturnNotFoundIfAccountDoesntExist(){
+  public void shouldReturnNotFoundWhenAccountDoesntExist(){
     when(bankingAccountService.getBankStatement(Mockito.anyBoolean(),Mockito.anyString())).thenReturn(new BankingAccountTransactionHistoryResponseDTO());
     Response response = bankStatementController.getBankStatement(false,ACCOUNT_NO);
 

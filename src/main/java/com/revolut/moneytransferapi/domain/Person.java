@@ -7,10 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Person {
 
   @Id
@@ -28,4 +31,12 @@ public class Person {
 
   @OneToOne
   private Address address;
+
+  public Person(String name, String surname, LocalDate dateOfBirth,
+      Address address) {
+    this.name = name;
+    this.surname = surname;
+    this.dateOfBirth = dateOfBirth;
+    this.address = address;
+  }
 }
