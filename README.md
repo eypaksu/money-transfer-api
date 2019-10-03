@@ -1,6 +1,6 @@
 # Money Transfer API
 
-Money Transfer API has two functionality which is money sending and getting a bank statement
+Money Transfer API has two functionality which is money sending and getting bank statement
 
 ## Requires
 
